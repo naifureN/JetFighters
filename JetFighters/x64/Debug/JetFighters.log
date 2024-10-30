@@ -1,0 +1,3 @@
+﻿  main.cpp
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(26,23): warning C4244: "inicjowanie": konwersja z "sf::Int64" do "int", możliwa utrata danych
+  JetFighters.vcxproj -> C:\Users\Komputer\source\repos\JetFighters\x64\Debug\JetFighters.exe
