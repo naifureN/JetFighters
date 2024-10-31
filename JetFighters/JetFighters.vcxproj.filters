@@ -19,4 +19,15 @@
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="texture.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="player.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="enemy.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

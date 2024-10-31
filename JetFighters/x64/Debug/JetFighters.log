@@ -1,3 +1,14 @@
 ﻿  main.cpp
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(26,23): warning C4244: "inicjowanie": konwersja z "sf::Int64" do "int", możliwa utrata danych
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(10,19): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,110): warning C4244: "argument": konwersja z "int" do "T", możliwa utrata danych
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,110): warning C4244:         with
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,110): warning C4244:         [
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,110): warning C4244:             T=float
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,110): warning C4244:         ]
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,71): warning C4244: "argument": konwersja z "int" do "T", możliwa utrata danych
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,71): warning C4244:         with
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,71): warning C4244:         [
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,71): warning C4244:             T=float
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,71): warning C4244:         ]
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(30,44): warning C4244: "=": konwersja z "sf::Int32" do "float", możliwa utrata danych
   JetFighters.vcxproj -> C:\Users\Komputer\source\repos\JetFighters\x64\Debug\JetFighters.exe
