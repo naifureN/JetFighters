@@ -10,5 +10,4 @@ C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,71): warning 
 C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,71): warning C4244:         [
 C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,71): warning C4244:             T=float
 C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(25,71): warning C4244:         ]
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(30,44): warning C4244: "=": konwersja z "sf::Int32" do "float", możliwa utrata danych
   JetFighters.vcxproj -> C:\Users\Komputer\source\repos\JetFighters\x64\Debug\JetFighters.exe

@@ -2,7 +2,7 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 
-const float SPEED = 8;
+const float SPEED = 800;
 
 sf::Vector2f normalizeVector(sf::Vector2f vect) {
     if (vect == sf::Vector2f(0, 0))
@@ -27,7 +27,7 @@ int main() {
     character.setPosition(sf::Vector2f(450, 850));
 
     while (window.isOpen()) {
-        dt = clock.restart().asMilliseconds(); //deltaTime
+        dt = (float)clock.restart().asMicroseconds()/1000000; //deltaTime
         sf::Vector2f currentPos = character.getPosition();
         sf::Vector2f velocity = sf::Vector2f(0, 0);
         while (window.pollEvent(event)) {
