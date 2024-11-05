@@ -11,6 +11,18 @@ sf::Vector2f normalizeVector(sf::Vector2f vect) {
     return sf::operator/=(vect, vectlen);
 }
 
+struct Player {
+    sf::Vector2f size = sf::Vector2f(100, 100);
+    sf::Vector2f origin = sf::Vector2f(50, 50);
+    sf::Vector2f position = sf::Vector2f(450, 800);
+    sf::Vector2f direction = sf::Vector2f(0, 0);
+    
+
+    void move(float deltaTime) {
+        sf::operator+=(position, sf::operator*(sf::operator*(direction, SPEED), deltaTime));
+    }
+};
+
 int main() {
 
 
@@ -19,49 +31,52 @@ int main() {
     sf::Event event;
     sf::Clock clock;
     float dt;
-    sf::Texture characterTexture;
-    characterTexture.loadFromFile("player.png");
-    sf::Sprite character(characterTexture);
-    character.setOrigin(sf::Vector2f(character.getTextureRect().width / 2, character.getTextureRect().height / 2));
-    
-    character.setPosition(sf::Vector2f(450, 850));
+    Player player;
+    sf::Texture playerTexture;
+    playerTexture.loadFromFile("player.png");
+    sf::Sprite playerSprite(playerTexture);
+    playerSprite.setOrigin(player.origin);
+    playerSprite.setPosition(player.position);
 
     while (window.isOpen()) {
         dt = (float)clock.restart().asMicroseconds()/1000000; //deltaTime
-        sf::Vector2f currentPos = character.getPosition();
-        sf::Vector2f velocity = sf::Vector2f(0, 0);
+        player.direction = sf::Vector2f(0, 0);
+
+  
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
         //przechodzenie na przeciwn¹ czêœæ ekranu
-        if (currentPos.x > 945)
-            currentPos.x = -20;
-        if (currentPos.x < -45)
-            currentPos.x = 920;
+        if (player.position.x > 945)
+            player.position.x = -20;
+        if (player.position.x < -45)
+            player.position.x = 920;
         //kierunek ruchu
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            velocity.x -= 1;
+            player.direction.x -= 1;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            velocity.x += 1;
+            player.direction.x += 1;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            if (currentPos.y >= 60)
-                velocity.y -= 1;
+            if (player.position.y >= 60)
+                player.direction.y -= 1;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            if (currentPos.y <= 840)
-                velocity.y += 1;
+            if (player.position.y <= 840)
+                player.direction.y += 1;
         }
+            
         
         //normalizacja wektora prêdkoœci (d³ugoœæ 1)
-        velocity = normalizeVector(velocity);
+        player.direction = normalizeVector(player.direction);
         //ruch
-        character.setPosition(currentPos + sf::operator*(sf::operator*(velocity, SPEED),dt));
-        std::cout << dt <<std::endl;
+        player.move(dt);
+        playerSprite.setPosition(player.position);
+        //rysowanie wszystkiego na ekran
         window.clear(sf::Color::White);
-        window.draw(character);
+        window.draw(playerSprite);
         window.display();
     }
     return 0;
