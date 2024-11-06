@@ -135,6 +135,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="bullet.png" />
     <Image Include="enemy.png" />
     <Image Include="player.png" />
     <Image Include="texture.png" />
