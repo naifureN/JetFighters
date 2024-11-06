@@ -1,3 +1,4 @@
 ﻿  main.cpp
-C:\Users\User\source\repos\JetFighters\JetFighters\main.cpp(11,19): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
-  JetFighters.vcxproj -> C:\Users\User\source\repos\JetFighters\x64\Debug\JetFighters.exe
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(7,27): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(12,19): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
+  JetFighters.vcxproj -> C:\Users\Komputer\source\repos\JetFighters\x64\Debug\JetFighters.exe

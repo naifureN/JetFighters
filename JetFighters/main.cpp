@@ -3,7 +3,8 @@
 #include <iostream>
 
 const float SPEED = 800;
-const float BULLET_SPEED = 500;
+const float BULLET_SPEED = 900;
+const float SHOOT_SPEED = 0.2;
 
 sf::Vector2f normalizeVector(sf::Vector2f vect) {
     if (vect == sf::Vector2f(0, 0))
@@ -72,6 +73,7 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(900, 900), "Jet Fighters");
     sf::Event event;
     sf::Clock clock;
+    sf::Clock shootTimer;
     float dt;
     sf::Texture playerTexture;
     playerTexture.loadFromFile("player.png");
@@ -79,8 +81,10 @@ int main() {
     playerSprite.setOrigin(player.origin);
     playerSprite.setPosition(player.position);
     bulletTexture.loadFromFile("bullet.png");
-    for (int i = 0; i < 128; i++)
+    for (int i = 0; i < 128; i++){
         bulletSprites[i].setTexture(bulletTexture);
+        bulletSprites[i].setOrigin(bullets[i].origin);
+    }
 
     while (window.isOpen()) {
         dt = (float)clock.restart().asMicroseconds()/1000000; //deltaTime
@@ -89,12 +93,6 @@ int main() {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if (event.type == sf::Event::KeyPressed) {
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-                    shoot(player.caster);
-                    std::cout << "Spacja"<<std::endl;
-                }
-            }
         }
 
         //przechodzenie na przeciwn¹ czêœæ ekranu
@@ -116,6 +114,13 @@ int main() {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
             if (player.position.y <= 840)
                 player.direction.y += 1;
+        }
+        //strzelanie
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+            if ((float)shootTimer.getElapsedTime().asMicroseconds() / 1000000 > SHOOT_SPEED) {
+                shoot(player.caster);
+                shootTimer.restart();
+            }
         }
             
         
