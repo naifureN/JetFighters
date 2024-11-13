@@ -1,15 +1,15 @@
 ﻿  main.cpp
 C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(9,27): warning C4305: "inicjowanie": obcięcie z "double" do "float"
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(15,19): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(42,44): warning C4244: "argument": konwersja z "int" do "T", możliwa utrata danych
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(42,44): warning C4244:         with
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(42,44): warning C4244:         [
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(42,44): warning C4244:             T=float
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(42,44): warning C4244:         ]
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(63,35): warning C4244: "argument": konwersja z "int" do "T", możliwa utrata danych
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(63,35): warning C4244:         with
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(63,35): warning C4244:         [
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(63,35): warning C4244:             T=float
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(63,35): warning C4244:         ]
-C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(142,15): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(17,19): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(44,44): warning C4244: "argument": konwersja z "int" do "T", możliwa utrata danych
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(44,44): warning C4244:         with
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(44,44): warning C4244:         [
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(44,44): warning C4244:             T=float
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(44,44): warning C4244:         ]
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(65,35): warning C4244: "argument": konwersja z "int" do "T", możliwa utrata danych
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(65,35): warning C4244:         with
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(65,35): warning C4244:         [
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(65,35): warning C4244:             T=float
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(65,35): warning C4244:         ]
+C:\Users\Komputer\source\repos\JetFighters\JetFighters\main.cpp(170,15): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
   JetFighters.vcxproj -> C:\Users\Komputer\source\repos\JetFighters\x64\Debug\JetFighters.exe
