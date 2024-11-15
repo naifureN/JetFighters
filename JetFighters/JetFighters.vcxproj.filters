@@ -32,5 +32,8 @@
     <Image Include="bullet.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="bckgrnd.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
 </Project>

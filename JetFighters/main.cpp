@@ -7,6 +7,7 @@ const float SPEED = 800;
 const float ENEMY_SPEED = 300;
 const float BULLET_SPEED = 900;
 const float SHOOT_SPEED = 0.2;
+const float BCG_SPEED = 200;
 
 sf::Sprite playerSprite;
 
@@ -71,6 +72,7 @@ sf::Sprite enemySprites[128];
 
 //Struktura gracza
 sf::Clock hit_timer;
+sf::Clock pulse_timer;
 struct Player {
     const int caster = 0;
     int hp = 5;
@@ -89,6 +91,16 @@ struct Player {
         sf::Color playerColor = playerSprite.getColor();
         playerSprite.setColor(sf::Color(playerColor.r, playerColor.g, playerColor.b, 128));
         invulnerable = true;
+    }
+    void pulsate() {
+        if ((float)pulse_timer.getElapsedTime().asMicroseconds() / 1000000 >= 0.1) {
+            sf::Color playerColor = playerSprite.getColor();
+            if (playerColor.a == 255)
+                playerSprite.setColor(sf::Color(playerColor.r, playerColor.g, playerColor.b, 128));
+            else
+                playerSprite.setColor(sf::Color(playerColor.r, playerColor.g, playerColor.b, 255));
+            pulse_timer.restart();
+        }
     }
 };
 Player player;
@@ -175,6 +187,14 @@ int main() {
     sf::Clock spawner;
     float dt;
 
+    sf::Texture backgroundTexture;
+    backgroundTexture.loadFromFile("bckgrnd.png");
+    sf::Sprite back1;
+    back1.setTexture(backgroundTexture);
+    sf::Sprite back2;
+    back2.setTexture(backgroundTexture);
+    back2.setPosition(sf::Vector2f(back1.getPosition().x, back1.getPosition().y - 1200));
+
     sf::Texture playerTexture;
     playerTexture.loadFromFile("player.png");
     playerSprite.setTexture(playerTexture);
@@ -204,9 +224,22 @@ int main() {
         if (player.hp <= 0) {
             window.close();
         }
+        //Poruszanie t³a
+        sf::Vector2f bcg1pos = back1.getPosition();
+        sf::Vector2f bcg2pos = back2.getPosition();
+        bcg1pos.y += BCG_SPEED * dt;
+        bcg2pos.y += BCG_SPEED * dt;
+        if (bcg1pos.y >= 900) {
+            bcg1pos.y = bcg2pos.y - 1200;
+        }
+        else if (bcg2pos.y >= 900) {
+            bcg2pos.y = bcg1pos.y - 1200;
+        }
+        back1.setPosition(bcg1pos);
+        back2.setPosition(bcg2pos);
 
         //zmiana koloru po uderzeniu
-        if ((float)hit_timer.getElapsedTime().asMicroseconds() / 1000000 >= 0.6) {
+        if ((float)hit_timer.getElapsedTime().asMicroseconds() / 1000000 >= 1) {
             sf::Color playerColor = playerSprite.getColor();
             playerSprite.setColor(sf::Color(playerColor.r, playerColor.g, playerColor.b, 255));
             player.invulnerable = false;
@@ -268,8 +301,12 @@ int main() {
         }
         updateEntities();
         checkCollisions();
+        if (player.invulnerable == true)
+            player.pulsate();
         //rysowanie wszystkiego co aktywne na ekran
         window.clear(sf::Color::White);
+        window.draw(back1);
+        window.draw(back2);
         for (int i = 0; i < 128; i++) {
             if (true == enemies[i].active)
                 window.draw(enemySprites[i]);
