@@ -8,6 +8,8 @@ const float ENEMY_SPEED = 300;
 const float BULLET_SPEED = 900;
 const float SHOOT_SPEED = 0.2;
 const float BCG_SPEED = 200;
+char state = 'm'; // m = menu, p = playing
+bool end = false;
 
 sf::Sprite playerSprite;
 
@@ -81,6 +83,11 @@ struct Player {
     sf::Vector2f position = sf::Vector2f(450, 800);
     sf::Vector2f direction = sf::Vector2f(0, 0);
     bool invulnerable = false;
+    void reset() {
+        position = sf::Vector2f(450, 800);
+        hp = 5;
+        invulnerable = false;
+    }
 
     void move(float deltaTime) {
         sf::operator+=(position, sf::operator*(sf::operator*(direction, SPEED), deltaTime));
@@ -119,7 +126,7 @@ void shoot(int caster) {
     }
     if (caster == 0) {
         bullets[blt].position = player.position;
-        bullets[blt].position.y -= 20;
+        bullets[blt].position.y -= 50;
     }
 }
 
@@ -176,6 +183,41 @@ void checkCollisions() {
     }
 }
 
+sf::Sprite exitBtn;
+sf::Sprite startBtn;
+void checkButtons(sf::Vector2i windowPos) {
+    sf::Vector2i mousePos = sf::Mouse::getPosition();
+    sf::FloatRect exitBtnBounds(
+        exitBtn.getPosition().x,
+        exitBtn.getPosition().y,
+        300,
+        100
+    );
+    sf::FloatRect startBtnBounds(
+        startBtn.getPosition().x,
+        startBtn.getPosition().y,
+        300,
+        100
+    );
+    if (exitBtnBounds.contains(mousePos.x-windowPos.x, mousePos.y-windowPos.y)) {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            end = true;
+        }
+    }
+    if (startBtnBounds.contains(mousePos.x - windowPos.x, mousePos.y - windowPos.y)) {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            state = 'p';
+            player.reset();
+        }
+    }
+}
+
+void deactivate_game() {
+    for (int i = 0; i < 128; i++) {
+        bullets[i].active = false;
+        enemies[i].active = false;
+    }
+}
 
 int main() {
     //init
@@ -186,7 +228,7 @@ int main() {
     sf::Clock shootTimer;
     sf::Clock spawner;
     float dt;
-
+    
     sf::Texture backgroundTexture;
     backgroundTexture.loadFromFile("bckgrnd.png");
     sf::Sprite back1;
@@ -194,6 +236,16 @@ int main() {
     sf::Sprite back2;
     back2.setTexture(backgroundTexture);
     back2.setPosition(sf::Vector2f(back1.getPosition().x, back1.getPosition().y - 1200));
+
+    sf::Texture startbtnTexture;
+    startbtnTexture.loadFromFile("btnstart.png");
+    startBtn.setTexture(startbtnTexture);
+    sf::Texture exitbtnTexture;
+    exitbtnTexture.loadFromFile("btnexit.png");
+    exitBtn.setTexture(exitbtnTexture);
+    startBtn.setPosition(sf::Vector2f(300, 300));
+    exitBtn.setPosition(sf::Vector2f(300, 500));
+
 
     sf::Texture playerTexture;
     playerTexture.loadFromFile("player.png");
@@ -215,107 +267,134 @@ int main() {
 
 
     while (window.isOpen()) {
-        dt = (float)clock.restart().asMicroseconds()/1000000; //deltaTime
-        player.direction = sf::Vector2f(0, 0);
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        if (player.hp <= 0) {
-            window.close();
-        }
-        //Poruszanie t³a
-        sf::Vector2f bcg1pos = back1.getPosition();
-        sf::Vector2f bcg2pos = back2.getPosition();
-        bcg1pos.y += BCG_SPEED * dt;
-        bcg2pos.y += BCG_SPEED * dt;
-        if (bcg1pos.y >= 900) {
-            bcg1pos.y = bcg2pos.y - 1200;
-        }
-        else if (bcg2pos.y >= 900) {
-            bcg2pos.y = bcg1pos.y - 1200;
-        }
-        back1.setPosition(bcg1pos);
-        back2.setPosition(bcg2pos);
+        dt = (float)clock.restart().asMicroseconds() / 1000000; //deltaTime
+        if (state == 'p') {
+            player.direction = sf::Vector2f(0, 0);
 
-        //zmiana koloru po uderzeniu
-        if ((float)hit_timer.getElapsedTime().asMicroseconds() / 1000000 >= 1) {
-            sf::Color playerColor = playerSprite.getColor();
-            playerSprite.setColor(sf::Color(playerColor.r, playerColor.g, playerColor.b, 255));
-            player.invulnerable = false;
-        }
-        //przechodzenie na przeciwn¹ czêœæ ekranu
-        if (player.position.x > 945)
-            player.position.x = -20;
-        if (player.position.x < -45)
-            player.position.x = 920;
-        //kierunek ruchu
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            player.direction.x -= 1;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            player.direction.x += 1;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            if (player.position.y >= 60)
-                player.direction.y -= 1;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            if (player.position.y <= 840)
-                player.direction.y += 1;
-        }
-        //strzelanie
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            if ((float)shootTimer.getElapsedTime().asMicroseconds() / 1000000 > SHOOT_SPEED) {
-                shoot(player.caster);
-                shootTimer.restart();
+            if (player.hp <= 0) {
+                state = 'm';
+                deactivate_game();
             }
-        }
-        //Tworzenie przeciwników
-        if ((float)spawner.getElapsedTime().asMicroseconds() / 1000000 > 1) {
-            for (int i = 0; i < 128; i++) {
-                if (false == enemies[i].active) {
-                    enemies[i].activate();
-                    spawner.restart();
-                    break;
+            //Poruszanie t³a
+            sf::Vector2f bcg1pos = back1.getPosition();
+            sf::Vector2f bcg2pos = back2.getPosition();
+            bcg1pos.y += BCG_SPEED * dt;
+            bcg2pos.y += BCG_SPEED * dt;
+            if (bcg1pos.y >= 900) {
+                bcg1pos.y = bcg2pos.y - 1200;
+            }
+            else if (bcg2pos.y >= 900) {
+                bcg2pos.y = bcg1pos.y - 1200;
+            }
+            back1.setPosition(bcg1pos);
+            back2.setPosition(bcg2pos);
+
+            //zmiana koloru po uderzeniu
+            if ((float)hit_timer.getElapsedTime().asMicroseconds() / 1000000 >= 1) {
+                sf::Color playerColor = playerSprite.getColor();
+                playerSprite.setColor(sf::Color(playerColor.r, playerColor.g, playerColor.b, 255));
+                player.invulnerable = false;
+            }
+            //przechodzenie na przeciwn¹ czêœæ ekranu
+            if (player.position.x > 945)
+                player.position.x = -20;
+            if (player.position.x < -45)
+                player.position.x = 920;
+            //kierunek ruchu
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+                player.direction.x -= 1;
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+                player.direction.x += 1;
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+                if (player.position.y >= 60)
+                    player.direction.y -= 1;
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+                if (player.position.y <= 840)
+                    player.direction.y += 1;
+            }
+            //strzelanie
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                if ((float)shootTimer.getElapsedTime().asMicroseconds() / 1000000 > SHOOT_SPEED) {
+                    shoot(player.caster);
+                    shootTimer.restart();
                 }
             }
-        }
-        //ruch gracza
-        player.direction = normalizeVector(player.direction);
-        player.move(dt);
-        playerSprite.setPosition(player.position);
-        //ruch amunicji
-        for (int i = 0; i < 128; i++) {
-            if (bullets[i].active == true) {
-                bullets[i].move(dt);
-                bulletSprites[i].setPosition(bullets[i].position);
+            //Tworzenie przeciwników
+            if ((float)spawner.getElapsedTime().asMicroseconds() / 1000000 > 1) {
+                for (int i = 0; i < 128; i++) {
+                    if (false == enemies[i].active) {
+                        enemies[i].activate();
+                        spawner.restart();
+                        break;
+                    }
+                }
             }
-        }
-        //ruch przeciwników
-        for (int i = 0; i < 128; i++) {
-            if (enemies[i].active == true) {
-                enemies[i].move(dt);
-                enemySprites[i].setPosition(enemies[i].position);
+            //ruch gracza
+            player.direction = normalizeVector(player.direction);
+            player.move(dt);
+            playerSprite.setPosition(player.position);
+            //ruch amunicji
+            for (int i = 0; i < 128; i++) {
+                if (bullets[i].active == true) {
+                    bullets[i].move(dt);
+                    bulletSprites[i].setPosition(bullets[i].position);
+                }
             }
+            //ruch przeciwników
+            for (int i = 0; i < 128; i++) {
+                if (enemies[i].active == true) {
+                    enemies[i].move(dt);
+                    enemySprites[i].setPosition(enemies[i].position);
+                }
+            }
+            updateEntities();
+            checkCollisions();
+            if (player.invulnerable == true)
+                player.pulsate();
+            //rysowanie wszystkiego co aktywne na ekran
+            window.clear(sf::Color::White);
+            window.draw(back1);
+            window.draw(back2);
+            for (int i = 0; i < 128; i++) {
+                if (true == enemies[i].active)
+                    window.draw(enemySprites[i]);
+            }
+            for (int i = 0; i < 128; i++) {
+                if (true == bullets[i].active)
+                    window.draw(bulletSprites[i]);
+            }
+            window.draw(playerSprite);
         }
-        updateEntities();
-        checkCollisions();
-        if (player.invulnerable == true)
-            player.pulsate();
-        //rysowanie wszystkiego co aktywne na ekran
-        window.clear(sf::Color::White);
-        window.draw(back1);
-        window.draw(back2);
-        for (int i = 0; i < 128; i++) {
-            if (true == enemies[i].active)
-                window.draw(enemySprites[i]);
+        //Main menu
+        else if (state == 'm') {
+            checkButtons(window.getPosition());
+            if (end == true)
+                window.close();
+            sf::Vector2f bcg1pos = back1.getPosition();
+            sf::Vector2f bcg2pos = back2.getPosition();
+            bcg1pos.y += BCG_SPEED * 0.1 * dt;
+            bcg2pos.y += BCG_SPEED * 0.1 * dt;
+            if (bcg1pos.y >= 900) {
+                bcg1pos.y = bcg2pos.y - 1200;
+            }
+            else if (bcg2pos.y >= 900) {
+                bcg2pos.y = bcg1pos.y - 1200;
+            }
+            back1.setPosition(bcg1pos);
+            back2.setPosition(bcg2pos);
+            window.clear();
+            window.draw(back1);
+            window.draw(back2);
+            window.draw(startBtn);
+            window.draw(exitBtn);
         }
-        for (int i = 0; i < 128; i++) {
-            if (true == bullets[i].active)
-                window.draw(bulletSprites[i]);
-        }
-        window.draw(playerSprite);
         window.display();
     }
     return 0;
