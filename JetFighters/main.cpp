@@ -7,7 +7,7 @@
 const float SPEED = 800;
 const float ENEMY_SPEED = 300;
 const float BULLET_SPEED = 900;
-const float SHOOT_SPEED = 0.2;
+const float SHOOT_SPEED = 0.35;
 const float BCG_SPEED = 200;
 char state = 'm'; // m = menu, p = playing
 bool end = false;
@@ -44,8 +44,8 @@ sf::Sprite bulletSprites[128];
 
 //Struktura przeciwnika
 struct Enemy {
-    sf::Vector2f size = sf::Vector2f(60, 60);
-    sf::Vector2f origin = sf::Vector2f(30, 30);
+    sf::Vector2f size = sf::Vector2f(40, 70);
+    sf::Vector2f origin = sf::Vector2f(40, 40);
     sf::Vector2f position = sf::Vector2f(0 + rand() % 300, -100);
     sf::Vector2f direction = sf::Vector2f(0, 0);
     const int caster = 1;
@@ -80,7 +80,7 @@ sf::Clock pulse_timer;
 struct Player {
     const int caster = 0;
     int hp = 5;
-    sf::Vector2f size = sf::Vector2f(100, 100);
+    sf::Vector2f size = sf::Vector2f(70, 70);
     sf::Vector2f origin = sf::Vector2f(50, 50);
     sf::Vector2f position = sf::Vector2f(450, 800);
     sf::Vector2f direction = sf::Vector2f(0, 0);
@@ -128,7 +128,7 @@ void shoot(int caster) {
     }
     if (caster == 0) {
         bullets[blt].position = player.position;
-        bullets[blt].position.y -= 50;
+        bullets[blt].position.y -= 60;
     }
 }
 
@@ -147,7 +147,7 @@ void checkCollisions() {
     for (int i = 0; i < 128; i++) {
         if (enemies[i].active) {
             sf::FloatRect enemyBounds(
-                enemies[i].position.x - enemies[i].origin.x,
+                enemies[i].position.x - enemies[i].origin.x/2,
                 enemies[i].position.y - enemies[i].origin.y,
                 enemies[i].size.x,
                 enemies[i].size.y
@@ -254,7 +254,7 @@ int main() {
     back1.setTexture(backgroundTexture);
     sf::Sprite back2;
     back2.setTexture(backgroundTexture);
-    back2.setPosition(sf::Vector2f(back1.getPosition().x, back1.getPosition().y - 1200));
+    back2.setPosition(sf::Vector2f(back1.getPosition().x, back1.getPosition().y - 1195));
 
     sf::Texture startbtnTexture;
     startbtnTexture.loadFromFile("btnstart.png");
@@ -311,10 +311,10 @@ int main() {
             bcg1pos.y += BCG_SPEED * dt;
             bcg2pos.y += BCG_SPEED * dt;
             if (bcg1pos.y >= 900) {
-                bcg1pos.y = bcg2pos.y - 1200;
+                bcg1pos.y = bcg2pos.y - 1195;
             }
             else if (bcg2pos.y >= 900) {
-                bcg2pos.y = bcg1pos.y - 1200;
+                bcg2pos.y = bcg1pos.y - 1195;
             }
             back1.setPosition(bcg1pos);
             back2.setPosition(bcg2pos);
@@ -407,10 +407,10 @@ int main() {
             bcg1pos.y += BCG_SPEED * 0.1 * dt;
             bcg2pos.y += BCG_SPEED * 0.1 * dt;
             if (bcg1pos.y >= 900) {
-                bcg1pos.y = bcg2pos.y - 1200;
+                bcg1pos.y = bcg2pos.y - 1195;
             }
             else if (bcg2pos.y >= 900) {
-                bcg2pos.y = bcg1pos.y - 1200;
+                bcg2pos.y = bcg1pos.y - 1195;
             }
             back1.setPosition(bcg1pos);
             back2.setPosition(bcg2pos);
