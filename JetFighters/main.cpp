@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <SFML/Window/Cursor.hpp>
 #include <iostream>
 #include <random>
 
@@ -10,6 +11,7 @@ const float SHOOT_SPEED = 0.2;
 const float BCG_SPEED = 200;
 char state = 'm'; // m = menu, p = playing
 bool end = false;
+bool clickable = false;
 
 sf::Sprite playerSprite;
 
@@ -185,8 +187,8 @@ void checkCollisions() {
 
 sf::Sprite exitBtn;
 sf::Sprite startBtn;
-void checkButtons(sf::Vector2i windowPos) {
-    sf::Vector2i mousePos = sf::Mouse::getPosition();
+void checkButtons(sf::Vector2i mousePos) {
+    
     sf::FloatRect exitBtnBounds(
         exitBtn.getPosition().x,
         exitBtn.getPosition().y,
@@ -199,16 +201,27 @@ void checkButtons(sf::Vector2i windowPos) {
         300,
         100
     );
-    if (exitBtnBounds.contains(mousePos.x-windowPos.x, mousePos.y-windowPos.y)) {
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            end = true;
+    if (state == 'm') {
+        if (exitBtnBounds.contains(mousePos.x, mousePos.y)) {
+            clickable = true;
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                end = true;
+            }
+        }
+        else if (startBtnBounds.contains(mousePos.x, mousePos.y)) {
+
+            clickable = true;
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                state = 'p';
+                player.reset();
+            }
+        }
+        else {
+            clickable = false;
         }
     }
-    if (startBtnBounds.contains(mousePos.x - windowPos.x, mousePos.y - windowPos.y)) {
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            state = 'p';
-            player.reset();
-        }
+    else {
+        clickable = false;
     }
 }
 
@@ -228,6 +241,12 @@ int main() {
     sf::Clock shootTimer;
     sf::Clock spawner;
     float dt;
+
+    sf::Cursor cursor_normal;
+    cursor_normal.loadFromSystem(sf::Cursor::Arrow);
+    sf::Cursor cursor_clickable;
+    cursor_clickable.loadFromSystem(sf::Cursor::Hand);
+    window.setMouseCursor(cursor_normal);
     
     sf::Texture backgroundTexture;
     backgroundTexture.loadFromFile("bckgrnd.png");
@@ -272,6 +291,13 @@ int main() {
                 window.close();
         }
         dt = (float)clock.restart().asMicroseconds() / 1000000; //deltaTime
+        checkButtons(sf::Mouse::getPosition(window));
+        if (clickable == false) {
+            window.setMouseCursor(cursor_normal);
+        }
+        else {
+            window.setMouseCursor(cursor_clickable);
+        }
         if (state == 'p') {
             player.direction = sf::Vector2f(0, 0);
 
@@ -374,7 +400,6 @@ int main() {
         }
         //Main menu
         else if (state == 'm') {
-            checkButtons(window.getPosition());
             if (end == true)
                 window.close();
             sf::Vector2f bcg1pos = back1.getPosition();
