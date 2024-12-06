@@ -3,6 +3,7 @@
 #include <SFML/Window/Cursor.hpp>
 #include <iostream>
 #include <random>
+#include <string>
 
 const float SPEED = 800;
 const float ENEMY_SPEED = 300;
@@ -12,8 +13,13 @@ const float BCG_SPEED = 200;
 char state = 'm'; // m = menu, p = playing
 bool end = false;
 bool clickable = false;
+int score;
+float modifier;
 
 sf::Sprite playerSprite;
+sf::Font font;
+sf::Text scoreText;
+sf::Text hpText;
 
 //Tworzenie wektora o d³ugoœci 1
 sf::Vector2f normalizeVector(sf::Vector2f vect) {
@@ -89,6 +95,8 @@ struct Player {
         position = sf::Vector2f(450, 800);
         hp = 5;
         invulnerable = false;
+        score = 0;
+        modifier = 1;
     }
 
     void move(float deltaTime) {
@@ -110,6 +118,9 @@ struct Player {
                 playerSprite.setColor(sf::Color(playerColor.r, playerColor.g, playerColor.b, 255));
             pulse_timer.restart();
         }
+    }
+    void addScore() {
+        score += 100 * modifier;
     }
 };
 Player player;
@@ -175,8 +186,12 @@ void checkCollisions() {
                     );
 
                     if (enemyBounds.intersects(bulletBounds)) {
-                        bullets[j].active = false;
-                        enemies[i].active = false;
+                        if (bullets[j].caster == player.caster) {
+                            player.addScore();
+                            bullets[j].active = false;
+                            enemies[i].active = false;
+                        }
+
                         break;
                     }
                 }
@@ -184,9 +199,13 @@ void checkCollisions() {
         }
     }
 }
+void changeModifier() {
+    modifier += 0.1;
+}
 
 sf::Sprite exitBtn;
 sf::Sprite startBtn;
+sf::Clock modifierClock;
 void checkButtons(sf::Vector2i mousePos) {
     
     sf::FloatRect exitBtnBounds(
@@ -209,11 +228,12 @@ void checkButtons(sf::Vector2i mousePos) {
             }
         }
         else if (startBtnBounds.contains(mousePos.x, mousePos.y)) {
-
+            
             clickable = true;
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                 state = 'p';
                 player.reset();
+                modifierClock.restart();
             }
         }
         else {
@@ -235,6 +255,15 @@ void deactivate_game() {
 int main() {
     //init
     srand(time(NULL));
+    font.loadFromFile("Symtext.ttf");
+    scoreText.setFont(font);
+    scoreText.setCharacterSize(48);
+    scoreText.setFillColor(sf::Color::Black);
+    scoreText.setPosition(sf::Vector2f(100, 100));
+    hpText.setFont(font);
+    hpText.setCharacterSize(48);
+    hpText.setFillColor(sf::Color::Black);
+    hpText.setPosition(sf::Vector2f(15, 0));
     sf::RenderWindow window(sf::VideoMode(900, 900), "Jet Fighters");
     sf::Event event;
     sf::Clock clock;
@@ -282,6 +311,8 @@ int main() {
         enemySprites[i].setTexture(enemyTexture);
         enemySprites[i].setOrigin(enemies[i].origin);
     }
+    std::string scoreString;
+    std::string hpString;
     //koniec initu
 
 
@@ -290,26 +321,37 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+        if (modifierClock.getElapsedTime().asSeconds() >= 10) {
+            changeModifier();
+            modifierClock.restart();
+        }
+        std::cout << modifier << std::endl;
         dt = (float)clock.restart().asMicroseconds() / 1000000; //deltaTime
         checkButtons(sf::Mouse::getPosition(window));
         if (clickable == false) {
             window.setMouseCursor(cursor_normal);
         }
+        
         else {
             window.setMouseCursor(cursor_clickable);
         }
         if (state == 'p') {
+            scoreString = "Score: " + std::to_string(score);
+            scoreText.setString(scoreString);
+            hpString = "HP: " + std::to_string(player.hp);
+            hpText.setString(hpString);
             player.direction = sf::Vector2f(0, 0);
 
             if (player.hp <= 0) {
                 state = 'm';
                 deactivate_game();
             }
+            scoreText.setPosition(sf::Vector2f(window.getSize().x-scoreText.getLocalBounds().width-15,0));
             //Poruszanie t³a
             sf::Vector2f bcg1pos = back1.getPosition();
             sf::Vector2f bcg2pos = back2.getPosition();
-            bcg1pos.y += BCG_SPEED * dt;
-            bcg2pos.y += BCG_SPEED * dt;
+            bcg1pos.y += BCG_SPEED * modifier * dt;
+            bcg2pos.y += BCG_SPEED * modifier * dt;
             if (bcg1pos.y >= 900) {
                 bcg1pos.y = bcg2pos.y - 1195;
             }
@@ -397,6 +439,9 @@ int main() {
                     window.draw(bulletSprites[i]);
             }
             window.draw(playerSprite);
+            window.draw(scoreText);
+            window.draw(hpText);
+
         }
         //Main menu
         else if (state == 'm') {
@@ -404,8 +449,8 @@ int main() {
                 window.close();
             sf::Vector2f bcg1pos = back1.getPosition();
             sf::Vector2f bcg2pos = back2.getPosition();
-            bcg1pos.y += BCG_SPEED * 0.1 * dt;
-            bcg2pos.y += BCG_SPEED * 0.1 * dt;
+            bcg1pos.y += BCG_SPEED * modifier * 0.1 * dt;
+            bcg2pos.y += BCG_SPEED * modifier * 0.1 * dt;
             if (bcg1pos.y >= 900) {
                 bcg1pos.y = bcg2pos.y - 1195;
             }
