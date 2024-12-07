@@ -4,12 +4,15 @@
 #include <iostream>
 #include <random>
 #include <string>
+#include <iomanip>
+#include <sstream>
 
-const float SPEED = 800;
+const float SPEED = 600;
 const float ENEMY_SPEED = 300;
 const float BULLET_SPEED = 900;
-const float SHOOT_SPEED = 0.35;
+const float SHOOT_SPEED = 0.5;
 const float BCG_SPEED = 200;
+const float INVULNERABLE_TIME = 3;
 char state = 'm'; // m = menu, p = playing
 bool end = false;
 bool clickable = false;
@@ -20,6 +23,7 @@ sf::Sprite playerSprite;
 sf::Font font;
 sf::Text scoreText;
 sf::Text hpText;
+sf::Text modifierText;
 
 //Tworzenie wektora o d³ugoœci 1
 sf::Vector2f normalizeVector(sf::Vector2f vect) {
@@ -41,7 +45,8 @@ struct Bullet {
         if (caster == 0) {
             direction.y = -1;
         }
-        sf::operator+=(position, sf::operator*(sf::operator*(direction, BULLET_SPEED), deltaTime));
+        float speed = BULLET_SPEED * modifier;
+        sf::operator+=(position, sf::operator*(sf::operator*(direction, speed), deltaTime));
     }
 };
 
@@ -53,27 +58,26 @@ struct Enemy {
     sf::Vector2f size = sf::Vector2f(40, 70);
     sf::Vector2f origin = sf::Vector2f(40, 40);
     sf::Vector2f position = sf::Vector2f(0 + rand() % 300, -100);
-    sf::Vector2f direction = sf::Vector2f(0, 0);
+    sf::Vector2f direction = sf::Vector2f(-10 + rand() % 20, 1 + rand() % 9);
+    sf::Clock directionTimer;
     const int caster = 1;
     bool active = false;
-    int pattern = 1;
     void move(float deltaTime) {
-        if (pattern == 1) {
-            direction = normalizeVector(sf::Vector2f(4, 1));
-        }
-        else {
-            direction = normalizeVector(sf::Vector2f(-4, 1));
-        }
+        direction = normalizeVector(direction);
         if (position.x > 945)
             position.x = -20;
         if (position.x < -45)
             position.x = 920;
-
-        sf::operator+=(position, sf::operator*(sf::operator*(direction, ENEMY_SPEED), deltaTime));
+        float speed = ENEMY_SPEED * modifier;
+        sf::operator+=(position, sf::operator*(sf::operator*(direction, speed), deltaTime));
     }
     void activate() {
         active = true;
-        position = sf::Vector2f(0 + rand() % 300, -100);
+        position = sf::Vector2f(100 + rand() % 600, -100);
+    }
+    void change_direction() {
+        direction.x = -10 + rand() % 20;
+        direction.y = 1 + rand() % 9;
     }
 };
 
@@ -100,7 +104,8 @@ struct Player {
     }
 
     void move(float deltaTime) {
-        sf::operator+=(position, sf::operator*(sf::operator*(direction, SPEED), deltaTime));
+        float speed = SPEED * modifier;
+        sf::operator+=(position, sf::operator*(sf::operator*(direction, speed), deltaTime));
     }
     void hit() {
         hit_timer.restart();
@@ -200,7 +205,8 @@ void checkCollisions() {
     }
 }
 void changeModifier() {
-    modifier += 0.1;
+    float newnum = (float(3 + rand() % 9)) / 100;
+    modifier += newnum;
 }
 
 sf::Sprite exitBtn;
@@ -264,6 +270,10 @@ int main() {
     hpText.setCharacterSize(48);
     hpText.setFillColor(sf::Color::Black);
     hpText.setPosition(sf::Vector2f(15, 0));
+    modifierText.setFont(font);
+    modifierText.setCharacterSize(24);
+    modifierText.setFillColor(sf::Color::Black);
+    modifierText.setPosition(sf::Vector2f(15, 0));
     sf::RenderWindow window(sf::VideoMode(900, 900), "Jet Fighters");
     sf::Event event;
     sf::Clock clock;
@@ -310,9 +320,12 @@ int main() {
 
         enemySprites[i].setTexture(enemyTexture);
         enemySprites[i].setOrigin(enemies[i].origin);
+        enemies[i].directionTimer.restart();
     }
     std::string scoreString;
+    std::string modifierString;
     std::string hpString;
+
     //koniec initu
 
 
@@ -325,7 +338,7 @@ int main() {
             changeModifier();
             modifierClock.restart();
         }
-        std::cout << modifier << std::endl;
+
         dt = (float)clock.restart().asMicroseconds() / 1000000; //deltaTime
         checkButtons(sf::Mouse::getPosition(window));
         if (clickable == false) {
@@ -338,6 +351,9 @@ int main() {
         if (state == 'p') {
             scoreString = "Score: " + std::to_string(score);
             scoreText.setString(scoreString);
+            std::ostringstream stream;
+            stream << std::fixed << std::setprecision(2) << modifier;
+            modifierText.setString("Modifier: " + stream.str());
             hpString = "HP: " + std::to_string(player.hp);
             hpText.setString(hpString);
             player.direction = sf::Vector2f(0, 0);
@@ -347,6 +363,7 @@ int main() {
                 deactivate_game();
             }
             scoreText.setPosition(sf::Vector2f(window.getSize().x-scoreText.getLocalBounds().width-15,0));
+            modifierText.setPosition(sf::Vector2f((window.getSize().x/2) - (modifierText.getLocalBounds().width / 2), window.getSize().y-(15+32)));
             //Poruszanie t³a
             sf::Vector2f bcg1pos = back1.getPosition();
             sf::Vector2f bcg2pos = back2.getPosition();
@@ -362,7 +379,7 @@ int main() {
             back2.setPosition(bcg2pos);
 
             //zmiana koloru po uderzeniu
-            if ((float)hit_timer.getElapsedTime().asMicroseconds() / 1000000 >= 1) {
+            if ((float)hit_timer.getElapsedTime().asMicroseconds() / 1000000 >= INVULNERABLE_TIME/modifier) {
                 sf::Color playerColor = playerSprite.getColor();
                 playerSprite.setColor(sf::Color(playerColor.r, playerColor.g, playerColor.b, 255));
                 player.invulnerable = false;
@@ -395,7 +412,7 @@ int main() {
                 }
             }
             //Tworzenie przeciwników
-            if ((float)spawner.getElapsedTime().asMicroseconds() / 1000000 > 1) {
+            if ((float)spawner.getElapsedTime().asMicroseconds() / 1000000 >= 1/modifier) {
                 for (int i = 0; i < 128; i++) {
                     if (false == enemies[i].active) {
                         enemies[i].activate();
@@ -418,6 +435,10 @@ int main() {
             //ruch przeciwników
             for (int i = 0; i < 128; i++) {
                 if (enemies[i].active == true) {
+                    if (enemies[i].directionTimer.getElapsedTime().asSeconds() >= (10 - rand()%3)/modifier) {
+                        enemies[i].change_direction();
+                        enemies[i].directionTimer.restart();
+                    }
                     enemies[i].move(dt);
                     enemySprites[i].setPosition(enemies[i].position);
                 }
@@ -438,6 +459,7 @@ int main() {
                 if (true == bullets[i].active)
                     window.draw(bulletSprites[i]);
             }
+            window.draw(modifierText);
             window.draw(playerSprite);
             window.draw(scoreText);
             window.draw(hpText);
