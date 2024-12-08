@@ -55,8 +55,8 @@ sf::Sprite bulletSprites[128];
 
 //Struktura przeciwnika
 struct Enemy {
-    sf::Vector2f size = sf::Vector2f(40, 70);
-    sf::Vector2f origin = sf::Vector2f(40, 40);
+    sf::Vector2f size = sf::Vector2f(61, 94);
+    sf::Vector2f origin = sf::Vector2f(31, 47);
     sf::Vector2f position = sf::Vector2f(0 + rand() % 300, -100);
     sf::Vector2f direction = sf::Vector2f(-10 + rand() % 20, 1 + rand() % 9);
     sf::Clock directionTimer;
@@ -90,8 +90,8 @@ sf::Clock pulse_timer;
 struct Player {
     const int caster = 0;
     int hp = 5;
-    sf::Vector2f size = sf::Vector2f(70, 70);
-    sf::Vector2f origin = sf::Vector2f(50, 50);
+    sf::Vector2f size = sf::Vector2f(80, 100);
+    sf::Vector2f origin = sf::Vector2f(50, 71);
     sf::Vector2f position = sf::Vector2f(450, 800);
     sf::Vector2f direction = sf::Vector2f(0, 0);
     bool invulnerable = false;
