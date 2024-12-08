@@ -35,8 +35,8 @@ sf::Vector2f normalizeVector(sf::Vector2f vect) {
 
 //Struktura amunicji
 struct Bullet {
-    sf::Vector2f size = sf::Vector2f(40, 40);
-    sf::Vector2f origin = sf::Vector2f(20, 20);
+    sf::Vector2f size = sf::Vector2f(40, 70);
+    sf::Vector2f origin = sf::Vector2f(20, 35);
     sf::Vector2f position = sf::Vector2f(450, 800);
     sf::Vector2f direction = sf::Vector2f(0, 0);
     int caster;
@@ -385,10 +385,10 @@ int main() {
                 player.invulnerable = false;
             }
             //przechodzenie na przeciwn¹ czêœæ ekranu
-            if (player.position.x > 945)
-                player.position.x = -20;
-            if (player.position.x < -45)
-                player.position.x = 920;
+            if (player.position.x > 950)
+                player.position.x = -49;
+            if (player.position.x < -50)
+                player.position.x = 949;
             //kierunek ruchu
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
                 player.direction.x -= 1;
@@ -397,11 +397,11 @@ int main() {
                 player.direction.x += 1;
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-                if (player.position.y >= 60)
+                if (player.position.y >= 71+5)
                     player.direction.y -= 1;
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-                if (player.position.y <= 840)
+                if (player.position.y <= 900-71-5)
                     player.direction.y += 1;
             }
             //strzelanie
