@@ -41,6 +41,15 @@
     <Image Include="btnexit.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="btnrestart.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="btnmenu.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="logo.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Symtext.ttf">

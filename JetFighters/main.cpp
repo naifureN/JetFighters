@@ -13,7 +13,7 @@ const float BULLET_SPEED = 900;
 const float SHOOT_SPEED = 0.5;
 const float BCG_SPEED = 200;
 const float INVULNERABLE_TIME = 3;
-char state = 'm'; // m = menu, p = playing
+char state = 'm'; // m = menu, p = playing, l = lost
 bool end = false;
 bool clickable = false;
 int score;
@@ -24,6 +24,7 @@ sf::Font font;
 sf::Text scoreText;
 sf::Text hpText;
 sf::Text modifierText;
+sf::Text lostText;
 
 //Tworzenie wektora o d³ugoœci 1
 sf::Vector2f normalizeVector(sf::Vector2f vect) {
@@ -211,6 +212,8 @@ void changeModifier() {
 
 sf::Sprite exitBtn;
 sf::Sprite startBtn;
+sf::Sprite restartBtn;
+sf::Sprite menuBtn;
 sf::Clock modifierClock;
 void checkButtons(sf::Vector2i mousePos) {
     
@@ -226,6 +229,18 @@ void checkButtons(sf::Vector2i mousePos) {
         300,
         100
     );
+    sf::FloatRect menuBtnBounds(
+        menuBtn.getPosition().x,
+        menuBtn.getPosition().y,
+        300,
+        100
+    );
+    sf::FloatRect restartBtnBounds(
+        restartBtn.getPosition().x,
+        restartBtn.getPosition().y,
+        300,
+        100
+    );
     if (state == 'm') {
         if (exitBtnBounds.contains(mousePos.x, mousePos.y)) {
             clickable = true;
@@ -234,7 +249,25 @@ void checkButtons(sf::Vector2i mousePos) {
             }
         }
         else if (startBtnBounds.contains(mousePos.x, mousePos.y)) {
-            
+            clickable = true;
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                state = 'p';
+                player.reset();
+                modifierClock.restart();
+            }
+        }
+        else {
+            clickable = false;
+        }
+    }
+    else if (state == 'l') {
+        if (menuBtnBounds.contains(mousePos.x, mousePos.y)) {
+            clickable = true;
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                state = 'm';
+            }
+        }
+        else if (restartBtnBounds.contains(mousePos.x, mousePos.y)) {
             clickable = true;
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                 state = 'p';
@@ -274,6 +307,11 @@ int main() {
     modifierText.setCharacterSize(24);
     modifierText.setFillColor(sf::Color::Black);
     modifierText.setPosition(sf::Vector2f(15, 0));
+    lostText.setFont(font);
+    lostText.setCharacterSize(92);
+    lostText.setFillColor(sf::Color::Black);
+    lostText.setPosition(sf::Vector2f(15, 0));
+    lostText.setString("You lost!");
     sf::RenderWindow window(sf::VideoMode(900, 900), "Jet Fighters");
     sf::Event event;
     sf::Clock clock;
@@ -295,15 +333,32 @@ int main() {
     back2.setTexture(backgroundTexture);
     back2.setPosition(sf::Vector2f(back1.getPosition().x, back1.getPosition().y - 1195));
 
+    sf::Texture logoTexture;
+    logoTexture.loadFromFile("logo.png");
+    sf::Sprite logo;
+    logo.setTexture(logoTexture);
+    logo.setOrigin(sf::Vector2f(400, 0));
+    logo.setPosition(sf::Vector2f(450, 100));
+
     sf::Texture startbtnTexture;
     startbtnTexture.loadFromFile("btnstart.png");
     startBtn.setTexture(startbtnTexture);
+    startBtn.setPosition(sf::Vector2f(300, 400));
+
     sf::Texture exitbtnTexture;
     exitbtnTexture.loadFromFile("btnexit.png");
     exitBtn.setTexture(exitbtnTexture);
-    startBtn.setPosition(sf::Vector2f(300, 300));
-    exitBtn.setPosition(sf::Vector2f(300, 500));
+    exitBtn.setPosition(sf::Vector2f(300, 600));
 
+    sf::Texture restartbtnTexture;
+    restartbtnTexture.loadFromFile("btnrestart.png");
+    restartBtn.setTexture(restartbtnTexture);
+    restartBtn.setPosition(sf::Vector2f(300, 600));
+
+    sf::Texture menubtnTexture;
+    menubtnTexture.loadFromFile("btnmenu.png");
+    menuBtn.setTexture(menubtnTexture);
+    menuBtn.setPosition(sf::Vector2f(300, 750));
 
     sf::Texture playerTexture;
     playerTexture.loadFromFile("player.png");
@@ -359,7 +414,7 @@ int main() {
             player.direction = sf::Vector2f(0, 0);
 
             if (player.hp <= 0) {
-                state = 'm';
+                state = 'l';
                 deactivate_game();
             }
             scoreText.setPosition(sf::Vector2f(window.getSize().x-scoreText.getLocalBounds().width-15,0));
@@ -467,6 +522,7 @@ int main() {
         }
         //Main menu
         else if (state == 'm') {
+            modifier = 1.00;
             if (end == true)
                 window.close();
             sf::Vector2f bcg1pos = back1.getPosition();
@@ -486,6 +542,33 @@ int main() {
             window.draw(back2);
             window.draw(startBtn);
             window.draw(exitBtn);
+            window.draw(logo);
+        }
+        //Lose screen
+        else if (state == 'l') {
+            scoreString = "Score: " + std::to_string(score);
+            scoreText.setString(scoreString);
+            scoreText.setPosition(sf::Vector2f(window.getSize().x / 2 - scoreText.getLocalBounds().width / 2, 200));
+            lostText.setPosition(sf::Vector2f(window.getSize().x / 2 - lostText.getLocalBounds().width / 2, 50));
+            sf::Vector2f bcg1pos = back1.getPosition();
+            sf::Vector2f bcg2pos = back2.getPosition();
+            bcg1pos.y += BCG_SPEED * modifier * 0.1 * dt;
+            bcg2pos.y += BCG_SPEED * modifier * 0.1 * dt;
+            if (bcg1pos.y >= 900) {
+                bcg1pos.y = bcg2pos.y - 1195;
+            }
+            else if (bcg2pos.y >= 900) {
+                bcg2pos.y = bcg1pos.y - 1195;
+            }
+            back1.setPosition(bcg1pos);
+            back2.setPosition(bcg2pos);
+            window.clear();
+            window.draw(back1);
+            window.draw(back2);
+            window.draw(restartBtn);
+            window.draw(menuBtn);
+            window.draw(scoreText);
+            window.draw(lostText);
         }
         window.display();
     }

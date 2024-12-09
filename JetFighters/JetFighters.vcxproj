@@ -137,9 +137,12 @@
   <ItemGroup>
     <Image Include="bckgrnd.png" />
     <Image Include="btnexit.png" />
+    <Image Include="btnmenu.png" />
+    <Image Include="btnrestart.png" />
     <Image Include="btnstart.png" />
     <Image Include="bullet.png" />
     <Image Include="enemy.png" />
+    <Image Include="logo.png" />
     <Image Include="player.png" />
     <Image Include="texture.png" />
   </ItemGroup>
