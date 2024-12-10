@@ -1,11 +1,11 @@
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 #include <SFML/Window/Cursor.hpp>
 #include <iostream>
 #include <random>
 #include <string>
 #include <iomanip>
 #include <sstream>
+#include <fstream>
 
 const float SPEED = 600;
 const float ENEMY_SPEED = 300;
@@ -22,6 +22,7 @@ float modifier;
 sf::Sprite playerSprite;
 sf::Font font;
 sf::Text scoreText;
+sf::Text hscoreText;
 sf::Text hpText;
 sf::Text modifierText;
 sf::Text lostText;
@@ -225,7 +226,6 @@ sf::Sprite restartBtn;
 sf::Sprite menuBtn;
 sf::Clock modifierClock;
 void checkButtons(sf::Vector2i mousePos) {
-    
     sf::FloatRect exitBtnBounds(
         exitBtn.getPosition().x,
         exitBtn.getPosition().y,
@@ -300,14 +300,40 @@ void deactivate_game() {
     }
 }
 
+int read_high_score() {
+    std::string high_score_str;
+    std::string hscore_file_name = "high_score.txt";
+    std::ifstream hscore_file(hscore_file_name);
+    std::getline(hscore_file, high_score_str);
+    hscore_file.close();
+    return std::stoi(high_score_str);
+}
+
+void save_high_score(int scr, int hscr) {
+    if (scr > hscr) {
+        hscr = scr;
+        std::string hscore_file_name = "high_score.txt";
+        std::ofstream hscore_file(hscore_file_name);
+        hscore_file << hscr;
+        hscore_file.close();
+    }
+}
+
 int main() {
     //init
+    
+    int high_score = read_high_score();
+    std::cout << high_score;
     srand(time(NULL));
     font.loadFromFile("Symtext.ttf");
     scoreText.setFont(font);
     scoreText.setCharacterSize(48);
     scoreText.setFillColor(sf::Color::Black);
     scoreText.setPosition(sf::Vector2f(100, 100));
+    hscoreText.setFont(font);
+    hscoreText.setCharacterSize(48);
+    hscoreText.setFillColor(sf::Color::Black);
+    hscoreText.setPosition(sf::Vector2f(100, 100));
     hpText.setFont(font);
     hpText.setCharacterSize(48);
     hpText.setFillColor(sf::Color::Black);
@@ -362,12 +388,12 @@ int main() {
     sf::Texture restartbtnTexture;
     restartbtnTexture.loadFromFile("btnrestart.png");
     restartBtn.setTexture(restartbtnTexture);
-    restartBtn.setPosition(sf::Vector2f(300, 600));
+    restartBtn.setPosition(sf::Vector2f(300, 550));
 
     sf::Texture menubtnTexture;
     menubtnTexture.loadFromFile("btnmenu.png");
     menuBtn.setTexture(menubtnTexture);
-    menuBtn.setPosition(sf::Vector2f(300, 750));
+    menuBtn.setPosition(sf::Vector2f(300, 700));
 
     sf::Texture playerTexture;
     playerTexture.loadFromFile("player.png");
@@ -387,6 +413,7 @@ int main() {
         enemies[i].directionTimer.restart();
     }
     std::string scoreString;
+    std::string hscoreString;
     std::string modifierString;
     std::string hpString;
 
@@ -421,9 +448,11 @@ int main() {
             hpString = "HP: " + std::to_string(player.hp);
             hpText.setString(hpString);
             player.direction = sf::Vector2f(0, 0);
-
+            //koniec gry
             if (player.hp <= 0) {
                 state = 'l';
+                save_high_score(score, high_score);
+                high_score = read_high_score();
                 deactivate_game();
             }
             scoreText.setPosition(sf::Vector2f(window.getSize().x-scoreText.getLocalBounds().width-15,0));
@@ -556,8 +585,11 @@ int main() {
         //Lose screen
         else if (state == 'l') {
             scoreString = "Score: " + std::to_string(score);
+            hscoreString = "High score: " + std::to_string(high_score);
             scoreText.setString(scoreString);
             scoreText.setPosition(sf::Vector2f(window.getSize().x / 2 - scoreText.getLocalBounds().width / 2, 200));
+            hscoreText.setString(hscoreString);
+            hscoreText.setPosition(sf::Vector2f(window.getSize().x / 2 - hscoreText.getLocalBounds().width / 2, 300));
             lostText.setPosition(sf::Vector2f(window.getSize().x / 2 - lostText.getLocalBounds().width / 2, 50));
             sf::Vector2f bcg1pos = back1.getPosition();
             sf::Vector2f bcg2pos = back2.getPosition();
@@ -577,6 +609,7 @@ int main() {
             window.draw(restartBtn);
             window.draw(menuBtn);
             window.draw(scoreText);
+            window.draw(hscoreText);
             window.draw(lostText);
         }
         window.display();
