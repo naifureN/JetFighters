@@ -56,4 +56,9 @@
       <Filter>Pliki zasobów</Filter>
     </Font>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="high_score.txt">
+      <Filter>Pliki zasobów</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

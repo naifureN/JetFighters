@@ -57,8 +57,8 @@ sf::Sprite bulletSprites[128];
 //Struktura przeciwnika
 struct Enemy {
     sf::Vector2f size = sf::Vector2f(61, 94);
-    sf::Vector2f origin = sf::Vector2f(31, 47);
-    sf::Vector2f position = sf::Vector2f(0 + rand() % 300, -100);
+    sf::Vector2f origin = sf::Vector2f(61/2, 94/2);
+    sf::Vector2f position = sf::Vector2f(100 + rand() % 600, -100);
     sf::Vector2f direction = sf::Vector2f(-10 + rand() % 20, 1 + rand() % 9);
     sf::Clock directionTimer;
     const int caster = 1;
@@ -91,7 +91,7 @@ sf::Clock pulse_timer;
 struct Player {
     const int caster = 0;
     int hp = 5;
-    sf::Vector2f size = sf::Vector2f(80, 100);
+    sf::Vector2f size = sf::Vector2f(100, 142);
     sf::Vector2f origin = sf::Vector2f(50, 71);
     sf::Vector2f position = sf::Vector2f(450, 800);
     sf::Vector2f direction = sf::Vector2f(0, 0);
@@ -164,24 +164,11 @@ void checkCollisions() {
     for (int i = 0; i < 128; i++) {
         if (enemies[i].active) {
             sf::FloatRect enemyBounds(
-                enemies[i].position.x - enemies[i].origin.x/2,
+                enemies[i].position.x - enemies[i].origin.x,
                 enemies[i].position.y - enemies[i].origin.y,
                 enemies[i].size.x,
                 enemies[i].size.y
             );
-            sf::FloatRect playerBounds(
-                player.position.x - player.origin.x,
-                player.position.y - player.origin.y,
-                player.size.x,
-                player.size.y
-            );
-            if (player.invulnerable == false) {
-                if (enemyBounds.intersects(playerBounds)) {
-                    player.hit();
-                    enemies[i].active = false;
-                    break;
-                }
-            }
             for (int j = 0; j < 128; j++) {
                 if (bullets[j].active) {
                     sf::FloatRect bulletBounds(
@@ -197,7 +184,29 @@ void checkCollisions() {
                             bullets[j].active = false;
                             enemies[i].active = false;
                         }
-
+                        break;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 128; i++) {
+            if (enemies[i].active) {
+                sf::FloatRect enemyBounds(
+                    enemies[i].position.x - 15,
+                    enemies[i].position.y - 40,
+                    30,
+                    80
+                );
+                sf::FloatRect playerBounds(
+                    player.position.x - player.origin.x,
+                    player.position.y - player.origin.y,
+                    player.size.x,
+                    player.size.y
+                );
+                if (player.invulnerable == false) {
+                    if (enemyBounds.intersects(playerBounds)) {
+                        player.hit();
+                        enemies[i].active = false;
                         break;
                     }
                 }
