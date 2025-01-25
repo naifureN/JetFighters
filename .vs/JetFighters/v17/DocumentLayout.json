@@ -1,10 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\User\\source\\repos\\JetFighters\\",
+  "WorkspaceRootPath": "C:\\Users\\Komputer\\source\\repos\\JetFighters\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0EFB070E-B0D3-4326-AD62-51E73D7638B7}|JetFighters\\JetFighters.vcxproj|C:\\Users\\User\\source\\repos\\JetFighters\\JetFighters\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{0EFB070E-B0D3-4326-AD62-51E73D7638B7}|JetFighters\\JetFighters.vcxproj|C:\\Users\\Komputer\\source\\repos\\JetFighters\\JetFighters\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{0EFB070E-B0D3-4326-AD62-51E73D7638B7}|JetFighters\\JetFighters.vcxproj|solutionrelative:JetFighters\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0EFB070E-B0D3-4326-AD62-51E73D7638B7}|JetFighters\\JetFighters.vcxproj|C:\\Users\\Komputer\\source\\repos\\JetFighters\\JetFighters\\high_score.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{0EFB070E-B0D3-4326-AD62-51E73D7638B7}|JetFighters\\JetFighters.vcxproj|solutionrelative:JetFighters\\high_score.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,17 +18,29 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "high_score.txt",
+              "DocumentMoniker": "C:\\Users\\Komputer\\source\\repos\\JetFighters\\JetFighters\\high_score.txt",
+              "RelativeDocumentMoniker": "JetFighters\\high_score.txt",
+              "ToolTip": "C:\\Users\\Komputer\\source\\repos\\JetFighters\\JetFighters\\high_score.txt",
+              "RelativeToolTip": "JetFighters\\high_score.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2024-12-10T09:50:36.843Z"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "main.cpp",
-              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\JetFighters\\JetFighters\\main.cpp",
+              "DocumentMoniker": "C:\\Users\\Komputer\\source\\repos\\JetFighters\\JetFighters\\main.cpp",
               "RelativeDocumentMoniker": "JetFighters\\main.cpp",
-              "ToolTip": "C:\\Users\\User\\source\\repos\\JetFighters\\JetFighters\\main.cpp",
+              "ToolTip": "C:\\Users\\Komputer\\source\\repos\\JetFighters\\JetFighters\\main.cpp",
               "RelativeToolTip": "JetFighters\\main.cpp",
-              "ViewState": "AgIAAMUAAAAAAAAAAAAAwNQAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAL4CAAAAAAAAAAAAAN8CAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-10-30T15:14:23.991Z",
               "EditorCaption": ""

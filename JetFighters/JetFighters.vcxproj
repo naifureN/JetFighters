@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="bckgrnd.png" />
+    <Image Include="btncontrols.png" />
     <Image Include="btnexit.png" />
     <Image Include="btnmenu.png" />
     <Image Include="btnrestart.png" />
