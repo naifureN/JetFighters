@@ -143,6 +143,7 @@
     <Image Include="btnstart.png" />
     <Image Include="bullet.png" />
     <Image Include="enemy.png" />
+    <Image Include="icon.png" />
     <Image Include="logo.png" />
     <Image Include="player.png" />
     <Image Include="texture.png" />

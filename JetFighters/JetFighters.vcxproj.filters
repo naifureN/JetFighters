@@ -53,6 +53,9 @@
     <Image Include="btncontrols.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="icon.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Symtext.ttf">

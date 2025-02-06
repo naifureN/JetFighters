@@ -57,6 +57,7 @@ struct Bullet {
 
 Bullet bullets[128];
 Sprite bulletSprites[128];
+Texture bulletTexture;
 
 //Struktura przeciwnika
 struct Enemy {
@@ -89,6 +90,7 @@ struct Enemy {
 
 Enemy enemies[128];
 Sprite enemySprites[128];
+Texture enemyTexture;
 
 //Struktura gracza
 Clock hit_timer;
@@ -135,8 +137,6 @@ struct Player {
     }
 };
 Player player;
-Texture bulletTexture;
-Texture enemyTexture;
 
 //Funkcja strzelania
 void shoot(int caster) {
@@ -331,6 +331,9 @@ void checkButtons(Vector2i mousePos) {
             clickable = false;
         }
     }
+    else {
+        clickable = false;
+    }
 }
 
 //dezaktywacja przeciwników oraz amunicji po grze 
@@ -396,6 +399,9 @@ int main() {
     controlsText.setPosition(Vector2f(100, 100));
 
     RenderWindow window(VideoMode(900, 900), "Jet Fighters");
+    sf::Image icon;
+    icon.loadFromFile("icon.png");
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
     Event event;
 
     //tworzenie timerów
@@ -665,6 +671,7 @@ int main() {
             window.draw(controlsBtn);
             window.draw(logo);
         }
+
         //Lose screen
         else if (state == 'l') {
             //aktualizacja tekstów oraz ustawienie przycisków
