@@ -554,7 +554,7 @@ int main() {
                 player.invulnerable = false;
             }
 
-            //przechodzenie na przeciwną część ekranu
+            //przechodzenie na przeciwną część ekranu w poziomie
             if (player.position.x > 950)
                 player.position.x = -49;
             if (player.position.x < -50)
@@ -567,6 +567,7 @@ int main() {
             if (Keyboard::isKeyPressed(Keyboard::D) or Keyboard::isKeyPressed(Keyboard::Right)) {
                 player.direction.x += 1;
             }
+            //uniemożliwienie wyjścia poza ekran w pionie
             if (Keyboard::isKeyPressed(Keyboard::W) or Keyboard::isKeyPressed(Keyboard::Up)) {
                 if (player.position.y >= 71+5)
                     player.direction.y -= 1;
